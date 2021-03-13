@@ -89,26 +89,47 @@
 
 
     const myQuestions = [{
-            question: "1.This is a sample question:", ///// Write the question inside double quotes
+            question: "1. Structures with shorter periods of vibration tend to reduce acceleration.", ///// Write the question inside double quotes
             answers: {
-                a: "This is a sample answer A", ///// Write the option 1 inside double quotes
-                b: "This is a sample answer B", ///// Write the option 2 inside double quotes
+                a: "True", ///// Write the option 1 inside double quotes
+                b: "False", ///// Write the option 2 inside double quotes
+            },
+            correctAnswer: "b" ///// Write the correct option inside double quotes
+        },
+ 
+          question: "2. Rollers are used in the Base isolation method.", ///// Write the question inside double quotes
+            answers: {
+                a: "True", ///// Write the option 1 inside double quotes
+                b: "False", ///// Write the option 2 inside double quotes
+            },
+            correctAnswer: "b" ///// Write the correct option inside double quotes
+        },   
+
+         question: "3. Active control devices incorporate real-time recoding instrumentation on the ground.", ///// Write the question inside double quotes
+            answers: {
+                a: "True", ///// Write the option 1 inside double quotes
+                b: "False", ///// Write the option 2 inside double quotes
             },
             correctAnswer: "a" ///// Write the correct option inside double quotes
         },
 
-    {
-      question: "<img src='images/8.PNG'><br>Identify the location of Secondary electron detector",  ///// Write the question inside double quotes
-      answers: {
-        a: "<img src='images/1b.png'>",                  ///// Write the option 1 inside double quotes
-        b: "<img src='images/1a.png'>",                  ///// Write the option 2 inside double quotes
-        c: "<img src='images/1c.PNG'>",      },
-      correctAnswer: "c"                ///// Write the correct option inside double quotes
-    },
+         question: "4. Dampers stabilize against violent motion caused by harmonic motion.", ///// Write the question inside double quotes
+            answers: {
+                a: "True", ///// Write the option 1 inside double quotes
+                b: "False", ///// Write the option 2 inside double quotes
+            },
+            correctAnswer: "a" ///// Write the correct option inside double quotes
+        },
 
+         question: "5. The TMD system relies on the sloshing wave developing at the free surface of the fluid to dissipate a portion of the dynamic energy.", ///// Write the question inside double quotes
+            answers: {
+                a: "True", ///// Write the option 1 inside double quotes
+                b: "False", ///// Write the option 2 inside double quotes
+            },
+            correctAnswer: "b" ///// Write the correct option inside double quotes
+        },
 
-        
-    ];
+   ];
 
 
 
