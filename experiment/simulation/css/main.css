@@ -1,5 +1,19 @@
 /* You CSS goes in here */
 #main {
-	width: 100%;
-	height: 100%;
+	width: 85%;
+	height: 85%;
+	background-color: #A4C652;
+}
+
+button {
+	color: white;
+	text-align: center;
+	background-color: #288EC8;
+	border-radius: 16px;
+	padding: 10px 20px;
+	border: none;
+}
+
+button:hover {
+	background-color: #A9A9A9;
 }
