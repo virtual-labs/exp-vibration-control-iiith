@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	const playButton = document.getElementById('play');
 	const pauseButton = document.getElementById('pause');
 	const restartButton = document.getElementById('restart');
-	const submitButton = document.getElementById('submit');
 
 	pauseButton.addEventListener('click', function() { window.clearTimeout(tmHandle); });
 	playButton.addEventListener('click', function() {  window.clearTimeout(tmHandle); tmHandle = setTimeout(draw, 1000 / fps); });
@@ -36,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	// Update the current slider value (each time you drag the slider handle)
 	slider_wid.oninput = function() {
 		output_wid.innerHTML = this.value;
+		lineWidth = Number(document.getElementById("lineWidth").value);
+		stiff = 28 / 7 * lineWidth;
+		scale = 12.5 / 7 * lineWidth;
+		restart();
 	};
 
 	const slider_mot = document.getElementById("motion");
@@ -45,16 +48,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	// Update the current slider value (each time you drag the slider handle)
 	slider_mot.oninput = function() {
 		output_mot.innerHTML = this.value;
-	};
-
-	submitButton.addEventListener('click', function() {
-		lineWidth = Number(document.getElementById("lineWidth").value);
 		vibe = Number(document.getElementById("motion").value);
-		stiff = 28 / 7 * lineWidth;
-		scale = 12.5 / 7 * lineWidth;
-
 		restart();
-	});
+	};
 
 	let height = 375;
 	let vibe = 30;
@@ -65,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function(){
 	canvas.style = "border:3px solid";
 	const ctx = canvas.getContext("2d");
 
-	fill = "#D3D3D3";
-	border = "black";
-	lineWidth = 7;
-
+	const fill = "#D3D3D3";
+	const border = "black";
+	let lineWidth = 7;	
+	let triWidth = 0;	
 	const fps = 15;
 	let dirn = -1;
 	let scale = 12.5;
@@ -201,27 +197,28 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.lineWidth = 20;
 			ctx.lineCap = "square";
 			ctx.beginPath();
-			ctx.moveTo(v[0][0], v[0][1]);
-			ctx.lineTo(v[1][0], v[1][1]);
+			ctx.moveTo(v[0][0], v[0][1]+10);
+			ctx.lineTo(v[1][0], v[1][1]+10);
 			ctx.closePath();
 			ctx.stroke();
 			ctx.restore();
 
 			if(k == 1)
 			{
+				triWidth=2+(4/7*(7-lineWidth))
 				ctx.save();
 				ctx.beginPath();
 				ctx.lineWidth = 10;
 				// ctx.lineCap = "round";
 				ctx.lineJoin = "round";
-				ctx.moveTo(v[1][0], v[1][1]);
+				ctx.moveTo(v[1][0]-triWidth, v[1][1]);
 				ctx.lineTo(v[4][0], v[4][1]);
 				ctx.closePath();
 				ctx.stroke();
 
 				ctx.beginPath();
-				ctx.moveTo(v[4][0], v[4][1]);
-				ctx.lineTo(v[0][0], v[0][1]);
+				ctx.moveTo(v[0][0]+triWidth, v[0][1]);
+				ctx.lineTo(v[4][0], v[4][1]);
 				ctx.closePath();
 				ctx.stroke();
 				ctx.restore();
