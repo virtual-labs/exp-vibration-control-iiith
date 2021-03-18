@@ -1,11 +1,16 @@
 /* You CSS goes in here */
+.page {
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
 #main {
 	width: 85%;
 	height: 85%;
 	background-color: #A4C652;
 }
 
-button {
+.button {
 	color: white;
 	text-align: center;
 	background-color: #288EC8;
@@ -14,6 +19,6 @@ button {
 	border: none;
 }
 
-button:hover {
+.button:hover {
 	background-color: #A9A9A9;
 }
