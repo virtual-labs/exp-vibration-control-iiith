@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
 
 	const playButton = document.getElementById('play');
 	const pauseButton = document.getElementById('pause');
@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function(){
 		window.clearTimeout(tmHandle); 
 
 		bldg = [
-			[[upL[0], defY], [upR[0], defY], [startR[0], defY + height], [startL[0], defY + height]],
-			[[upL[1], defY], [upR[1], defY], [startR[1], defY + height], [startL[1], defY + height], [pivot, defY - 135], [pivot, defY - 50], [pivot, defY - 40]]
+			[[startL[0], defY], [startR[0], defY], [startR[0], defY + height], [startL[0], defY + height]],
+			[[startL[1], defY], [startR[1], defY], [startR[1], defY + height], [startL[1], defY + height], [pivot, defY - 135], [pivot, defY - 50], [pivot, defY - 40]]
 		];
 
 		ground = [
@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', function(){
 			[startR[1] + 50, defY + height + 45],
 		];
 
-		dirn = -1;
+		dirn[0] = 0;
+		dirn[1] = 0;
+		scale[0] = 4 + 0.25 * (Number(document.getElementById("lineWidth").value) - 7);
+		scale[1] = 4 + 0.25 * (Number(document.getElementById("lineWidth").value) - 7);
 		tmHandle = window.setTimeout(draw, 1000 / fps); 
 	}
 
@@ -32,12 +35,13 @@ document.addEventListener('DOMContentLoaded', function(){
 	const output_wid = document.getElementById("demo_width");
 	output_wid.innerHTML = slider_wid.value; // Display the default slider value
 
-	// Update the current slider value (each time you drag the slider handle)
 	slider_wid.oninput = function() {
 		output_wid.innerHTML = this.value;
 		lineWidth = Number(document.getElementById("lineWidth").value);
-		stiff = 28 / 7 * lineWidth;
-		scale = 12.5 / 7 * lineWidth;
+		damp = 0.3 * Number(document.getElementById("lineWidth").value);
+		scale[0] = 4 + 0.25 * (Number(document.getElementById("lineWidth").value) - 7);
+		scale[1] = 4 + 0.25 * (Number(document.getElementById("lineWidth").value) - 7);
+		fps = 5 + Number(document.getElementById("lineWidth").value); 
 		restart();
 	};
 
@@ -45,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function(){
 	const output_mot = document.getElementById("demo_motion");
 	output_mot.innerHTML = slider_mot.value; // Display the default slider value
 
-	// Update the current slider value (each time you drag the slider handle)
 	slider_mot.oninput = function() {
 		output_mot.innerHTML = this.value;
 		vibe = Number(document.getElementById("motion").value);
@@ -53,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	};
 
 	let height = 375;
-	let vibe = 30;
+	let vibe = 40;
 
 	const canvas = document.getElementById("main");
 	canvas.width = 1200;
@@ -65,32 +68,30 @@ document.addEventListener('DOMContentLoaded', function(){
 	const border = "black";
 	let lineWidth = 7;	
 	let triWidth = 0;	
-	const fps = 15;
-	let dirn = -1;
-	let scale = 12.5;
-	let stiff = 28;
+	let fps = 12;
+	let dirn = [0, 0];
+	let scale = [4, 4];
+	let damp = 2.1;
 
-	let defY = 150;
-	let startL = [300, 725];
-	let startR = [475, 900];
+	const defY = 150;
+	const startL = [300, 725];
+	const startR = [475, 900];
 
-	let upL = {...startL};
-	let upR = {...startR};
-	let pivot = (startR[1] - startL[1])/2 + startL[1];
+	const pivot = (startR[1] - startL[1]) / 2 + startL[1];
 	let bldg = [
-		[[upL[0], defY], [upR[0], defY], [startR[0], defY + height], [startL[0], defY + height]],
-		[[upL[1], defY], [upR[1], defY], [startR[1], defY + height], [startL[1], defY + height], [pivot, defY - 135], [pivot, defY - 50], [pivot, defY - 40]]
+		[[startL[0], defY], [startR[0], defY], [startR[0], defY + height], [startL[0], defY + height]],
+		[[startL[1], defY], [startR[1], defY], [startR[1], defY + height], [startL[1], defY + height], [pivot, defY - 135], [pivot, defY - 50], [pivot, defY - 40]]
 	];
 
 
 	let ground = [
-		[startL[0] - 250, defY + height + 45],
-		[startL[0] - 250, defY + height],
-		[startR[1] + 250, defY + height],
-		[startR[1] + 250, defY + height + 45]
+		[startL[0] - 50, defY + height + 45],
+		[startL[0] - 50, defY + height],
+		[startR[1] + 50, defY + height],
+		[startR[1] + 50, defY + height + 45],
 	];
 
-	function drawGround(ctx, ground)
+	function drawGround(ctx, ground) //for drawing the ground
 	{
 		ctx.save();
 		ctx.fillStyle = "pink";
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 		for(let i = 0; i < ground.length; ++i)
 		{
-			let next = (i + 1) % ground.length;
+			const next = (i + 1) % ground.length;
 			ctx.lineTo(ground[next][0], ground[next][1]);
 		}
 
@@ -110,75 +111,64 @@ document.addEventListener('DOMContentLoaded', function(){
 		ctx.restore();
 	}
 
-	function updateGround(ground, chg)
-	{
-		ground.forEach(g => {
-			g[0] += chg;
-		});
-	}
-
 	function draw()
 	{
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = fill;
 		ctx.lineWidth = lineWidth;
-		// ctx.lineCap = "round";
-		// ctx.lineJoin = "round";
-
-			// if(dirn == -1)
-			// 	updateGround(ground, vibe / scale)
-			// else
-			// 	updateGround(ground, -1 * vibe / scale)
 
 		drawGround(ctx, ground);
 
 		for(let k = 0; k < 2; ++k) // number of building
 		{
 			let v = bldg[k];
-
-			if(dirn == -1)
+			const end = vibe / 3;
+			if(scale[k] < end)
 			{
-				if(k==0)
+				if(dirn[k] < 5 || dirn[k] > 14)
 				{
-					v[0][0] -= vibe / scale;
-					v[1][0] -= vibe / scale;
+					if(k === 0)
+					{
+						v[0][0] -= vibe / scale[k];
+						v[1][0] -= vibe / scale[k];
+					}
+
+					if(k === 1)
+					{
+						v[0][0] -= 0.5 * vibe / scale[k];
+						v[1][0] -= 0.5 * vibe / scale[k];
+						v[4][0] -= 0.5 * vibe / scale[k];
+						v[5][0] -= 0.5 * (vibe / scale[k] - (0.45 * vibe / scale[k]));
+						v[6][0] -= 0.5 * (vibe / scale[k] - (0.45 * vibe / scale[k]));
+					}
+
 				}
-				// v[2][0] += vibe / scale
-				// v[3][0] += vibe / scale
-				if(k == 1)
+				else if(dirn[k] >= 5 && dirn[k] <= 14)
 				{
-					v[0][0] -= vibe / stiff;
-					v[1][0] -= vibe / stiff;
-					v[4][0] -= vibe / stiff;
-					v[5][0] -= vibe / stiff - (0.35 * vibe / stiff);
-					v[6][0] -= vibe / stiff - (0.35 * vibe / stiff);
+					if(k === 0)
+					{
+						v[0][0] += vibe / scale[k];
+						v[1][0] += vibe / scale[k];
+					}
+					if(k === 1)
+					{
+						v[0][0] += 0.5 * vibe / scale[k];
+						v[1][0] += 0.5 * vibe / scale[k];
+						v[4][0] += 0.5 * vibe / scale[k];
+						v[5][0] += 0.5 * (vibe / scale[k] - (0.45 * vibe / scale[k]));
+						v[6][0] += 0.5 * (vibe / scale[k] - (0.45 * vibe / scale[k]));
+					}
+
 				}
-
-			}
-
-			else
-			{
-				if(k == 0)
+				if(dirn[k] === 19)
 				{
-					v[0][0] += vibe / scale;
-					v[1][0] += vibe / scale;
+					scale[k] = scale[k] + 0.6 * damp;
+					if(k === 1)
+					{
+						scale[1] = scale[1] + 1.2 * damp;
+					}
 				}
-				// v[2][0] -= vibe / scale
-				// v[3][0] -= vibe / scale
-				if(k == 1)
-				{
-					v[0][0] += vibe / stiff;
-					v[1][0] += vibe / stiff;
-					v[4][0] += vibe / stiff;
-					v[5][0] += vibe / stiff - (0.35 * vibe / stiff);
-					v[6][0] += vibe / stiff - (0.35 * vibe / stiff);
-				}
-
-			}
-
-			if(k == 1 && (v[0][0] <= upL[k] - vibe || v[1][0] >= upR[k] + vibe))
-			{
-				dirn *= -1;
+				dirn[k] = (dirn[k] + 1) % 20;
 			}
 
 			ctx.beginPath();
@@ -197,33 +187,32 @@ document.addEventListener('DOMContentLoaded', function(){
 			ctx.lineWidth = 20;
 			ctx.lineCap = "square";
 			ctx.beginPath();
-			ctx.moveTo(v[0][0], v[0][1]+10);
-			ctx.lineTo(v[1][0], v[1][1]+10);
+			ctx.moveTo(v[0][0], v[0][1] + 10);
+			ctx.lineTo(v[1][0], v[1][1] + 10);
 			ctx.closePath();
 			ctx.stroke();
 			ctx.restore();
 
-			if(k == 1)
+			if(k === 1) // the TMD for the second building
 			{
-				triWidth=2+(4/7*(7-lineWidth))
+				triWidth = 2 + (4 / 7 * (7 - lineWidth));
 				ctx.save();
 				ctx.beginPath();
 				ctx.lineWidth = 10;
-				// ctx.lineCap = "round";
 				ctx.lineJoin = "round";
-				ctx.moveTo(v[1][0]-triWidth, v[1][1]);
+				ctx.moveTo(v[1][0] - triWidth, v[1][1]);
 				ctx.lineTo(v[4][0], v[4][1]);
 				ctx.closePath();
 				ctx.stroke();
 
 				ctx.beginPath();
-				ctx.moveTo(v[0][0]+triWidth, v[0][1]);
+				ctx.moveTo(v[0][0] + triWidth, v[0][1]);
 				ctx.lineTo(v[4][0], v[4][1]);
 				ctx.closePath();
 				ctx.stroke();
 				ctx.restore();
 
-				ctx.save();
+				ctx.save(); // pendulum
 				ctx.lineWidth = 3;
 				ctx.lineJoin = "round";
 				ctx.beginPath();
@@ -232,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function(){
 				ctx.closePath();
 				ctx.stroke();
 
-				ctx.beginPath();
+				ctx.beginPath(); // bob
 				ctx.arc(v[6][0], v[6][1], 10, 0, 2 * Math.PI);
 				ctx.closePath();
 				ctx.stroke();
@@ -248,4 +237,4 @@ document.addEventListener('DOMContentLoaded', function(){
 	}
 
 	let tmHandle = window.setTimeout(draw, 1000 / fps);
-})
+});
