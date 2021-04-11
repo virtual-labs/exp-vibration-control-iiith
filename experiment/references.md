@@ -1,3 +1,3 @@
-- [https://en.wikipedia.org/wiki/Tuned_mass_damper](http://en.wikipedia.org/wiki/Tuned_mass_damper)
-- [https://en.wikipedia.org/wiki/Base_isolation.](http://en.wikipedia.org/wiki/Base_isolation.)
-- [https://en.wikipedia.org/wiki/Vibration_control](http://en.wikipedia.org/wiki/Vibration_control)
+- [Tuned Mass Damper - Wikipedia](https://en.wikipedia.org/wiki/Tuned_mass_damper)
+- [Base Isolation - Wikipedia](https://en.wikipedia.org/wiki/Base_isolation)
+- [Vibration Control - Wikipedia](https://en.wikipedia.org/wiki/Vibration_control)
