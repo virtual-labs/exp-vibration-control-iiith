@@ -7,3 +7,4 @@ When building begins to oscillate it excites the Tuned Mass Damper (TMD) into mo
 When the ground shakes, the rollers freely roll, but the building above does not move. Thus, no force is transferred to the building due to the shaking of the ground; simply, the building does not experience the earthquake. You may notice that displacement of building reduces by using base isolators.
 
 [Read More](doc/10.theory.pdf)
+ 
